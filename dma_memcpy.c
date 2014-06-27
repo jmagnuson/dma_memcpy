@@ -93,6 +93,7 @@ uDMAErrorHandler(void)
         if (udma_callback_ptr)
 		{
         	(*udma_callback_ptr)(2);
+        	udma_callback_ptr = NULL;
 		}
     }
 
@@ -121,6 +122,7 @@ uDMAIntHandler(void)
         if (udma_callback_ptr)
 		{
         	(*udma_callback_ptr)(0);
+        	udma_callback_ptr = NULL;
 		}
 
     }
@@ -133,6 +135,7 @@ uDMAIntHandler(void)
         if (udma_callback_ptr)
         {
         	(*udma_callback_ptr)(1);
+        	udma_callback_ptr = NULL;
         }
     }
 
