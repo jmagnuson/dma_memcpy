@@ -24,14 +24,25 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src</name>
+			<type>2</type>
+			<locationURI>SRC_LOC</locationURI>
+		</link>
+	</linkedResources>
 	<variableList>
 		<variable>
 			<name>ORIGINAL_PROJECT_ROOT</name>
-			<value>file:/D:/ti/TivaWare_C_Series-2.1.0.12573/examples/boards/ek-tm4c1294xl/udma_demo/ccs</value>
+			<value>file:/C:/ti/TivaWare_C_Series-2.1.0.12573/examples/boards/ek-tm4c1294xl/udma_demo/ccs</value>
+		</variable>
+		<variable>
+			<name>SRC_LOC</name>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/src</value>
 		</variable>
 		<variable>
 			<name>SW_ROOT</name>
-			<value>file:/D:/ti/TivaWare_C_Series-2.1.0.12573</value>
+			<value>file:/C:/ti/TivaWare_C_Series-2.1.0.12573</value>
 		</variable>
 	</variableList>
 </projectDescription>

@@ -6,8 +6,8 @@
 		<cconfiguration id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.1253177179">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.1253177179" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<macros>
-					<stringMacro name="ORIGINAL_PROJECT_ROOT" type="VALUE_PATH_DIR" value="D:\ti\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\udma_demo\ccs"/>
-					<stringMacro name="SW_ROOT" type="VALUE_PATH_DIR" value="D:\ti\TivaWare_C_Series-2.1.0.12573"/>
+					<stringMacro name="ORIGINAL_PROJECT_ROOT" type="VALUE_PATH_DIR" value="C:\ti\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\udma_demo\ccs"/>
+					<stringMacro name="SW_ROOT" type="VALUE_PATH_DIR" value="C:\ti\TivaWare_C_Series-2.1.0.12573"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -46,8 +46,9 @@
 									<listOptionValue builtIn="false" value="&quot;D:\ti\CMSIS-SP-00300-r4p0-00rel0\CMSIS\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${SW_ROOT}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/freertos/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/freertos/portable/CCS/ARM_CM4F&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}/freertos/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}/freertos/portable/CCS/ARM_CM4F&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}&quot;"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.GCC.1751867262" name="Enable support for GCC extensions (--gcc)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.GCC" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE.538857994" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE" valueType="definedSymbols">
@@ -101,8 +102,8 @@
 		<cconfiguration id="com.ti.ccstudio.buildDefinitions.TMS470.Release.567310644">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.ti.ccstudio.buildDefinitions.TMS470.Release.567310644" moduleId="org.eclipse.cdt.core.settings" name="Release">
 				<macros>
-					<stringMacro name="ORIGINAL_PROJECT_ROOT" type="VALUE_PATH_DIR" value="D:\ti\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\udma_demo\ccs"/>
-					<stringMacro name="SW_ROOT" type="VALUE_PATH_DIR" value="D:\ti\TivaWare_C_Series-2.1.0.12573"/>
+					<stringMacro name="ORIGINAL_PROJECT_ROOT" type="VALUE_PATH_DIR" value="C:\ti\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\udma_demo\ccs"/>
+					<stringMacro name="SW_ROOT" type="VALUE_PATH_DIR" value="C:\ti\TivaWare_C_Series-2.1.0.12573"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -139,8 +140,9 @@
 									<listOptionValue builtIn="false" value="&quot;D:\ti\CMSIS-SP-00300-r4p0-00rel0\CMSIS\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${SW_ROOT}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/freertos/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/freertos/portable/CCS/ARM_CM4F&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}/freertos/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}/freertos/portable/CCS/ARM_CM4F&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SRC_LOC}&quot;"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.GCC.1148175116" name="Enable support for GCC extensions (--gcc)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.GCC" value="true" valueType="boolean"/>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE.598874867" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.1.compilerID.DEFINE" valueType="definedSymbols">
