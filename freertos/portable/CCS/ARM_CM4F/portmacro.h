@@ -81,6 +81,8 @@ extern "C" {
  *-----------------------------------------------------------
  */
 
+#include "FreeRTOS.h"
+
 /* Type definitions. */
 #define portCHAR		char
 #define portFLOAT		float
@@ -148,19 +150,23 @@ not necessary for to use this port.  They are defined so the common demo files
 /*-----------------------------------------------------------*/
 
 /* Architecture specific optimisations. */
-#if configUSE_PORT_OPTIMISED_TASK_SELECTION == 1
+#if (configUSE_PORT_OPTIMISED_TASK_SELECTION == 1)
 
 	/* Generic helper function. */
 	__attribute__( ( always_inline ) ) static inline uint8_t ucPortCountLeadingZeros( uint32_t ulBitmap )
 	{
-	uint8_t ucReturn;
+	uint8_t ucReturn=0;
 
-		__asm volatile ( "clz %0, %1" : "=r" ( ucReturn ) : "r" ( ulBitmap ) );
+	#if defined(gcc)
+			__asm volatile ( "clz %0, %1" : "=r" ( ucReturn ) : "r" ( ulBitmap ) );
+	#elif defined(ccs)
+			ucReturn = _norm(ulBitmap);
+	#endif
 		return ucReturn;
 	}
 
 	/* Check the configuration. */
-	#if( configMAX_PRIORITIES > 32 )
+	#if ( _configMAX_PRIORITIES > 32 )
 		#error configUSE_PORT_OPTIMISED_TASK_SELECTION can only be set to 1 when configMAX_PRIORITIES is less than or equal to 32.  It is very rare that a system requires more than 10 to 15 difference priorities as tasks that share a priority will time slice.
 	#endif
 

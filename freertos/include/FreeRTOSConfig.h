@@ -82,7 +82,9 @@
 #define configUSE_RECURSIVE_MUTEXES         1
 #define configCHECK_FOR_STACK_OVERFLOW      2
 
-#define configMAX_PRIORITIES                ( ( unsigned portBASE_TYPE ) 16 )
+
+#define _configMAX_PRIORITIES               16    /* Added for use in portmacro.h */
+#define configMAX_PRIORITIES                ( ( unsigned portBASE_TYPE ) _configMAX_PRIORITIES )
 #define configMAX_CO_ROUTINE_PRIORITIES     ( 2 )
 #define configQUEUE_REGISTRY_SIZE           10
 
@@ -103,5 +105,7 @@ to exclude the API function. */
  */
 #define configKERNEL_INTERRUPT_PRIORITY         ( 7 << 5 )    /* Priority 7, or 0xE0 as only the top three bits are implemented.  This is the lowest priority. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY     ( 5 << 5 )  /* Priority 5, or 0xA0 as only the top three bits are implemented. */
+
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
 
 #endif /* FREERTOS_CONFIG_H */
