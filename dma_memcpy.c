@@ -190,6 +190,13 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 		return 1;
 	}
 
+	/* Return fail if txfer size greater than max */
+	/* TODO: Handle len > 1024 */
+	if (len > 1024)
+	{
+		return 2;
+	}
+
 	/* Set channel to busy */
 	udma_channel_lock = 1;
 

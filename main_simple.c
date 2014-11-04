@@ -47,7 +47,7 @@
 #include "dma_memcpy.h"
 
 /* Size of memcpy buffer */
-#define MEM_BUFFER_SIZE 16384
+#define MEM_BUFFER_SIZE 1024
 
 int udma_txfer_done = 0;
 void set_udma_txfer_done(int status){
