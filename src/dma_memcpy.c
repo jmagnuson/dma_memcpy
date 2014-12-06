@@ -83,7 +83,7 @@ uDMAErrorHandler(void)
 
     if(ui32Status)
     {
-    	/* Clear udma error status */
+        /* Clear udma error status */
         ROM_uDMAErrorStatusClear();
 
         /* Increment transmit failure count */
@@ -91,10 +91,10 @@ uDMAErrorHandler(void)
 
         /* Callback (error) */
         if (udma_callback_ptr)
-		{
-        	(*udma_callback_ptr)(2);
-        	udma_callback_ptr = NULL;
-		}
+        {
+            (*udma_callback_ptr)(2);
+            udma_callback_ptr = NULL;
+        }
     }
 
     /* Set channel to free */
@@ -120,22 +120,22 @@ uDMAIntHandler(void)
 
         /* Callback (success) */
         if (udma_callback_ptr)
-		{
-        	(*udma_callback_ptr)(0);
-        	udma_callback_ptr = NULL;
-		}
+        {
+            (*udma_callback_ptr)(0);
+            udma_callback_ptr = NULL;
+        }
 
     }
     else
     {
-    	/* Increment transmit failure count */
+        /* Increment transmit failure count */
         udma_xfer_fail_cnt++;
 
         /* Callback (fail) */
         if (udma_callback_ptr)
         {
-        	(*udma_callback_ptr)(1);
-        	udma_callback_ptr = NULL;
+            (*udma_callback_ptr)(1);
+            udma_callback_ptr = NULL;
         }
     }
 
@@ -166,14 +166,14 @@ init_dma_memcpy(uint32_t chan)
 
     /* Disable DMA attributes */
     ROM_uDMAChannelAttributeDisable(chan,
-		UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT |
-		(UDMA_ATTR_HIGH_PRIORITY |
-		UDMA_ATTR_REQMASK));
+        UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT |
+        (UDMA_ATTR_HIGH_PRIORITY |
+        UDMA_ATTR_REQMASK));
 
     /* Configure DMA control parameters */
     ROM_uDMAChannelControlSet(chan | UDMA_PRI_SELECT,
-		  UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 |
-		  UDMA_ARB_8);
+        UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 |
+        UDMA_ARB_8);
 
     udma_is_initialized = 1;
 
@@ -184,47 +184,47 @@ int __inline
 dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 {
 
-	/* Return busy if udma channel is in use */
-	if (udma_channel_lock)
-	{
-		return 1;
-	}
+    /* Return busy if udma channel is in use */
+    if (udma_channel_lock)
+    {
+        return 1;
+    }
 
-	/* Return fail if txfer size greater than max */
-	/* TODO: Handle len > 1024 */
-	if (len > 1024)
-	{
-		return 2;
-	}
+    /* Return fail if txfer size greater than max */
+    /* TODO: Handle len > 1024 */
+    if (len > 1024)
+    {
+        return 2;
+    }
 
-	/* Set channel to busy */
-	udma_channel_lock = 1;
+    /* Set channel to busy */
+    udma_channel_lock = 1;
 
-	// TODO: Possible race-condition!
+    // TODO: Possible race-condition!
 
-	if (!udma_is_initialized)
-	{
+    if (!udma_is_initialized)
+    {
 #if 1
-		/* Just initialize and proceed to memcpy */
-		init_dma_memcpy(chan);
+        /* Just initialize and proceed to memcpy */
+        init_dma_memcpy(chan);
 #else
-		return -1;
+        return -1;
 #endif
-	}
+    }
 
-	/* Set udma channel */
-	udma_channel = chan;
+    /* Set udma channel */
+    udma_channel = chan;
 
-	/* Point static callback ptr to input */
-	if (cb)
-	{
-		udma_callback_ptr = (fn_ptr_t)cb;
-	}
+    /* Point static callback ptr to input */
+    if (cb)
+    {
+        udma_callback_ptr = (fn_ptr_t)cb;
+    }
 
-	/* Set up udma transfer parameters */
-	ROM_uDMAChannelTransferSet(chan | UDMA_PRI_SELECT,
-		UDMA_MODE_AUTO, src, dst,
-		len);
+    /* Set up udma transfer parameters */
+    ROM_uDMAChannelTransferSet(chan | UDMA_PRI_SELECT,
+        UDMA_MODE_AUTO, src, dst,
+        len);
 
     /* Start udma transfer */
     ROM_uDMAChannelEnable(chan);

@@ -33,14 +33,14 @@ extern int main_rtos( void );
 
 int main( void )
 {
-	/* Run main app */
+    /* Run main app */
 #if defined(MAIN_SIMPLE)
-	main_simple();
+    main_simple();
 #else
-	main_rtos();
+    main_rtos();
 #endif
 
-	return 0;
+    return 0;
 
 }
 

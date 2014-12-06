@@ -28,6 +28,8 @@ tmp/
 # PDT-specific
 #.buildpath
 
+# Markdown generated file
+*.md.html
 
 #################
 ## Visual Studio

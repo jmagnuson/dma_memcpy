@@ -51,27 +51,27 @@
 
 int udma_txfer_done = 0;
 void set_udma_txfer_done(int status){
-	if (status==0){
-		/* Success */
-		udma_txfer_done = 1;
-	}
-	else {
-		/* Failed */
-		while (1);
-	}
+    if (status==0){
+        /* Success */
+        udma_txfer_done = 1;
+    }
+    else {
+        /* Failed */
+        while (1);
+    }
 }
 
 int main_simple(void)
 {
 
-	static uint32_t g_ui32SrcBuf[MEM_BUFFER_SIZE];
-	static uint32_t g_ui32DstBuf[MEM_BUFFER_SIZE];
+    static uint32_t g_ui32SrcBuf[MEM_BUFFER_SIZE];
+    static uint32_t g_ui32DstBuf[MEM_BUFFER_SIZE];
 
     /* Set up clock for 120MHz */
-	MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-						    SYSCTL_OSC_MAIN |
-							SYSCTL_USE_PLL |
-							SYSCTL_CFG_VCO_480), 120000000);
+    MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
+                            SYSCTL_OSC_MAIN |
+                            SYSCTL_USE_PLL |
+                            SYSCTL_CFG_VCO_480), 120000000);
 
     /* Set up SysTick timer */
     ROM_SysTickPeriodSet(0xffffffff);
@@ -82,13 +82,13 @@ int main_simple(void)
     init_dma_memcpy(UDMA_CHANNEL_SW);
 
     { /* Scope out the counter */
-		uint_fast16_t ui16Idx;
+        uint_fast16_t ui16Idx;
 
-		/* Fill source buffer with varying numbers */
-		for(ui16Idx = 0; ui16Idx < MEM_BUFFER_SIZE; ui16Idx++)
-		{
-			g_ui32SrcBuf[ui16Idx] = ui16Idx;
-		}
+        /* Fill source buffer with varying numbers */
+        for(ui16Idx = 0; ui16Idx < MEM_BUFFER_SIZE; ui16Idx++)
+        {
+            g_ui32SrcBuf[ui16Idx] = ui16Idx;
+        }
     }
 
     void *cbfn_ptr[2] = {&set_udma_txfer_done, NULL};
@@ -112,9 +112,9 @@ int main_simple(void)
 
     /* Wait around compare txfer times */
     while (1){
-    	count_past_dma++;
+        count_past_dma++;
 
-    	//__asm("nop");
+        //__asm("nop");
     }
 
     return 0;

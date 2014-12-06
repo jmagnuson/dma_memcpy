@@ -26,81 +26,68 @@
 __attribute__( ( always_inline ) ) static inline unsigned int sync_bool_compare_and_swap( volatile unsigned int *ptr, unsigned int oldval, unsigned int newval )
 {
 
-	unsigned int result = 0;
+    if (__ldrex((void*)ptr) == oldval){
 
-	//result = __ldrex((void*)ptr);
-	if (__ldrex((void*)ptr) == oldval){
-		//if (__strex( newval, (void*)ptr)){
-		//	return 1; //true;
-	    //}
-		return (__strex( newval, (void*)ptr));
-	}
-	return 0; //false;
+        return (__strex( newval, (void*)ptr));
+    }
+    return 0; //false;
 
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_add( volatile unsigned int *ptr, unsigned int value )
 {
-	unsigned int result=0;
+    unsigned int result=0;
 
-	//result = __ldrex(ptr) + value;
+    while(__strex( (result = __ldrex((void*)ptr) ) + value, (void*)ptr) );
 
-	while(__strex( (result = __ldrex((void*)ptr) ) + value, (void*)ptr) );
-
-	return result;
+    return result;
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_add_and_fetch( volatile unsigned int *ptr, unsigned int value )
 {
-	unsigned int result=0;
+    unsigned int result=0;
 
-	//result = __ldrex(ptr) + value;
+    while(__strex( (result = (__ldrex((void*)ptr) + value)), (void*)ptr) );
 
-	while(__strex( (result = (__ldrex((void*)ptr) + value)), (void*)ptr) );
-
-	return result;
+    return result;
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_sub( volatile unsigned int *ptr, unsigned int value )
 {
-	unsigned int result=0;
+    unsigned int result=0;
 
-	//result = __ldrex(ptr) + value;
+    while(__strex( (result = __ldrex((void*)ptr) ) - value, (void*)ptr) );
 
-	while(__strex( (result = __ldrex((void*)ptr) ) - value, (void*)ptr) );
-
-	return result;
+    return result;
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_sub_and_fetch( volatile unsigned int *ptr, unsigned int value )
 {
-	unsigned int result=0;
+    unsigned int result=0;
 
-	//result = __ldrex(ptr) + value;
+    while(__strex( (result = (__ldrex((void*)ptr) - value)), (void*)ptr) );
 
-	while(__strex( (result = (__ldrex((void*)ptr) - value)), (void*)ptr) );
-
-	return result;
+    return result;
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_increment( volatile unsigned int *ptr )
 {
-	return sync_fetch_and_add(ptr, 1);
+    return sync_fetch_and_add(ptr, 1);
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_increment_and_fetch( volatile unsigned int *ptr )
 {
-	return sync_add_and_fetch(ptr, 1);
+    return sync_add_and_fetch(ptr, 1);
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_decrement( volatile unsigned int *ptr )
 {
-	return sync_fetch_and_sub(ptr, 1);
+    return sync_fetch_and_sub(ptr, 1);
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int sync_decrement_and_fetch( volatile unsigned int *ptr )
 {
-	return sync_sub_and_fetch(ptr, 1);
+    return sync_sub_and_fetch(ptr, 1);
 }
 
 
