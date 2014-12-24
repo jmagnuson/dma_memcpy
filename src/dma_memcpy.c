@@ -45,6 +45,7 @@
 
 /* Application includes */
 #include "dma_memcpy.h"
+#include "arm_atomic.h"
 
 
 /*****************************************************************************
@@ -184,8 +185,8 @@ int __inline
 dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 {
 
-    /* Return busy if udma channel is in use */
-    if (udma_channel_lock)
+    /* Return busy if udma channel is in use, otherwise set busy and continue */
+    if (!sync_bool_compare_and_swap(&udma_channel_lock, 0,  1))
     {
         return 1;
     }
@@ -196,11 +197,6 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
     {
         return 2;
     }
-
-    /* Set channel to busy */
-    udma_channel_lock = 1;
-
-    // TODO: Possible race-condition!
 
     if (!udma_is_initialized)
     {
