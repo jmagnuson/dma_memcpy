@@ -76,6 +76,18 @@ void init_led( void )
     ROM_GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_0);
 }
 
+static SemaphoreHandle_t isrSemaphore;
+static void set_udma_txfer_done(int status){
+    if (status==0){
+        /* Success */
+        xSemaphoreGive(isrSemaphore);
+    }
+    else {
+        /* Failed */
+        while (1);
+    }
+}
+
 int main_rtos( void )
 {
     /* Variable declarations */
@@ -153,6 +165,9 @@ void prvProducerTask( void *pvParameters )
     sem_array =   (SemaphoreHandle_t*)(((TaskParameters*)pvParameters)->pcSemaphores);
     dest_buffer =          (uint32_t*)(((TaskParameters*)pvParameters)->buffer);
 
+    void *cbfn_ptr[2] = {&set_udma_txfer_done, NULL};
+    isrSemaphore = xSemaphoreCreateBinary();
+
     for (;;)
     {
 
@@ -177,11 +192,10 @@ void prvProducerTask( void *pvParameters )
                           ~ROM_GPIOPinRead(GPIO_PORTN_BASE, GPIO_PIN_0) );
 
         dma_memcpy( dest_buffer, &src_buffer[0],
-                    MEM_BUFFER_SIZE, UDMA_CHANNEL_SW, NULL );
+                    MEM_BUFFER_SIZE, UDMA_CHANNEL_SW, cbfn_ptr[0] );
 
-        /* Simulate wait on udma txfr complete semaphore */
-        vTaskDelay(500 / portTICK_RATE_MS);
-        /* TODO: Implement udma txfer complete via callback */
+        /* Wait for transfer completion via cb/semaphore */
+        xSemaphoreTake(isrSemaphore, portMAX_DELAY);
 
         /* Signal data ready */
         xSemaphoreGive(sem_array[0]);
