@@ -94,6 +94,12 @@ int main_rtos( void )
     static TaskParameters    taskParams      = {NULL, NULL};
     static SemaphoreHandle_t pcSemaphores[2] = {NULL, NULL};
 
+    /* Set up clock for 50MHz */
+    MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
+                            SYSCTL_OSC_MAIN |
+                            SYSCTL_USE_PLL |
+                            SYSCTL_CFG_VCO_480), 50000000);
+
     init_led();
 
     init_dma_memcpy(UDMA_CHANNEL_SW);

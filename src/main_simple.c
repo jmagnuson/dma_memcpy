@@ -77,6 +77,8 @@ int main_simple(void)
     ROM_SysTickPeriodSet(0xffffffff);
     ROM_SysTickEnable();
 
+    /* Enable interrupts */
+    ROM_IntMasterEnable();
 
 
     init_dma_memcpy(UDMA_CHANNEL_SW);

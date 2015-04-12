@@ -29,7 +29,7 @@ extern int main_simple( void );
 extern int main_rtos( void );
 
 /* Application switches. */
-#define MAIN_SIMPLE /* Use simple test (or RTOS-based if commented out) */
+//#define MAIN_SIMPLE /* Use simple test (or RTOS-based if commented out) */
 
 int main( void )
 {

@@ -1,202 +1,207 @@
-
-;   FreeRTOS V7.1.1 - Copyright (C) 2012 Real Time Engineers Ltd.
-
-
-;   ***************************************************************************
-;    *                                                                       *
-;    *    FreeRTOS tutorial books are available in pdf and paperback.        *
-;    *    Complete, revised, and edited pdf reference manuals are also       *
-;    *    available.                                                         *
-;    *                                                                       *
-;    *    Purchasing FreeRTOS documentation will not only help you, by       *
-;    *    ensuring you get running as quickly as possible and with an        *
-;    *    in-depth knowledge of how to use FreeRTOS, it will also help       *
-;    *    the FreeRTOS project to continue with its mission of providing     *
-;    *    professional grade, cross platform, de facto standard solutions    *
-;    *    for microcontrollers - completely free of charge!                  *
-;    *                                                                       *
-;    *    >>> See http://www.FreeRTOS.org/Documentation for details. <<<     *
-;    *                                                                       *
-;    *    Thank you for using FreeRTOS, and thank you for your support!      *
-;    *                                                                       *
-;   ***************************************************************************
-
-
-;   This file is part of the FreeRTOS distribution.
-
-;   FreeRTOS is free software; you can redistribute it and/or modify it under
-;   the terms of the GNU General Public License (version 2) as published by the
-;   Free Software Foundation AND MODIFIED BY the FreeRTOS exception.
-;   >>>NOTE<<< The modification to the GPL is included to allow you to
-;   distribute a combined work that includes FreeRTOS without being obliged to
-;   provide the source code for proprietary components outside of the FreeRTOS
-;   kernel.  FreeRTOS is distributed in the hope that it will be useful, but
-;   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-;   or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-;   more details. You should have received a copy of the GNU General Public
-;   License and the FreeRTOS license exception along with FreeRTOS; if not it
-;   can be viewed here: http://www.freertos.org/a00114.html and also obtained
-;   by writing to Richard Barry, contact details for whom are available on the
-;   FreeRTOS WEB site.
-
-;   1 tab == 4 spaces!
-
-;   ***************************************************************************
-;    *                                                                       *
-;    *    Having a problem?  Start by reading the FAQ "My application does   *
-;    *    not run, what could be wrong?                                      *
-;    *                                                                       *
-;    *    http://www.FreeRTOS.org/FAQHelp.html                               *
-;    *                                                                       *
-;   ***************************************************************************
-
-
-;   http://www.FreeRTOS.org - Documentation, training, latest information, 
-;   license and contact details.
-
-;   http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-;   including FreeRTOS+Trace - an indispensable productivity tool.
-
-;   Real Time Engineers ltd license FreeRTOS to High Integrity Systems, who sell 
-;   the code with commercial support, indemnification, and middleware, under 
-;   the OpenRTOS brand: http://www.OpenRTOS.com.  High Integrity Systems also
-;   provide a safety engineered and independently SIL3 certified version under 
-;   the SafeRTOS brand: http://www.SafeRTOS.com.
-
-
-	.cdecls  C, NOLIST, WARN, "FreeRTOSConfig.h"
+;/*
+;    FreeRTOS V8.2.1 - Copyright (C) 2015 Real Time Engineers Ltd.
+;    All rights reserved
+;
+;    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+;
+;    This file is part of the FreeRTOS distribution.
+;
+;    FreeRTOS is free software; you can redistribute it and/or modify it under
+;    the terms of the GNU General Public License (version 2) as published by the
+;    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+;
+;    ***************************************************************************
+;    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
+;    >>!   distribute a combined work that includes FreeRTOS without being   !<<
+;    >>!   obliged to provide the source code for proprietary components     !<<
+;    >>!   outside of the FreeRTOS kernel.                                   !<<
+;    ***************************************************************************
+;
+;    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+;    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
+;    link: http://www.freertos.org/a00114.html
+;
+;    ***************************************************************************
+;     *                                                                       *
+;     *    FreeRTOS provides completely free yet professionally developed,    *
+;     *    robust, strictly quality controlled, supported, and cross          *
+;     *    platform software that is more than just the market leader, it     *
+;     *    is the industry's de facto standard.                               *
+;     *                                                                       *
+;     *    Help yourself get started quickly while simultaneously helping     *
+;     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
+;     *    tutorial book, reference manual, or both:                          *
+;     *    http://www.FreeRTOS.org/Documentation                              *
+;     *                                                                       *
+;    ***************************************************************************
+;
+;    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
+;    the FAQ page "My application does not run, what could be wrong?".  Have you
+;    defined configASSERT()?
+;
+;    http://www.FreeRTOS.org/support - In return for receiving this top quality
+;    embedded software for free we request you assist our global community by
+;    participating in the support forum.
+;
+;    http://www.FreeRTOS.org/training - Investing in training allows your team to
+;    be as productive as possible as early as possible.  Now you can receive
+;    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
+;    Ltd, and the world's leading authority on the world's leading RTOS.
+;
+;    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+;    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+;    compatible FAT file system, and our tiny thread aware UDP/IP stack.
+;
+;    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
+;    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
+;
+;    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
+;    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
+;    licenses offer ticketed support, indemnification and commercial middleware.
+;
+;    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+;    engineered and independently SIL3 certified version for use in safety and
+;    mission critical applications that require provable dependability.
+;
+;    1 tab == 4 spaces!
+;*/
 
 	.thumb
-	.text
 
-	.global vTaskSwitchContext
-	.global pxCurrentTCB
-pxCurrentTCBvalue .word pxCurrentTCB
+	.ref pxCurrentTCB
+	.ref vTaskSwitchContext
+	.ref ulMaxSyscallInterruptPriority
 
-	.global xPortPendSVHandler
-	;.global vPortSetInterruptMask
-	.global ulPortSetInterruptMask
-	.global vPortClearInterruptMask
-	.global vPortSVCHandler
-	.global vPortStartFirstTask
-	.global vPortEnableVFP
+	.def xPortPendSVHandler
+	.def ulPortGetIPSR
+	.def vPortSVCHandler
+	.def vPortStartFirstTask
+	.def vPortEnableVFP
 
+NVICOffsetConst:					.word 	0xE000ED08
+CPACRConst:							.word 	0xE000ED88
+pxCurrentTCBConst:					.word	pxCurrentTCB
+ulMaxSyscallInterruptPriorityConst: .word ulMaxSyscallInterruptPriority
 
-;-----------------------------------------------------------
+; -----------------------------------------------------------
 
-xPortPendSVHandler:
+	.align 4
+ulPortGetIPSR: .asmfunc
+ 	mrs r0, ipsr
+ 	bx r14
+ 	.endasmfunc
+ ; -----------------------------------------------------------
+
+	.align 4
+vPortSetInterruptMask: .asmfunc
+	push {r0}
+	ldr r0, ulMaxSyscallInterruptPriorityConst
+	msr basepri, r0
+	pop {r0}
+	bx r14
+	.endasmfunc
+; -----------------------------------------------------------
+
+	.align 4
+xPortPendSVHandler: .asmfunc
 	mrs r0, psp
+	isb
 
-	; Get the location of the current TCB.
-	ldr r3, pxCurrentTCBvalue
-	ldr r2, [r3]
+	;/* Get the location of the current TCB. */
+	ldr	r3, pxCurrentTCBConst
+	ldr	r2, [r3]
 
-	; Is the task using the FPU context?  If so, push high vfp registers.
+	;/* Is the task using the FPU context?  If so, push high vfp registers. */
 	tst r14, #0x10
 	it EQ
 	vstmdbeq r0!, {s16-s31}
 
-	; Save the core registers.
+	;/* Save the core registers. */
 	stmdb r0!, {r4-r11, r14}
 
-	; Save the new top of stack into the first member of the TCB.
+	;/* Save the new top of stack into the first member of the TCB. */
 	str r0, [r2]
 
-	stmdb sp!, {r3, r14}
-	mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
-	msr basepri, r0
+	stmdb sp!, {r3}
+	ldr r0, ulMaxSyscallInterruptPriorityConst
+	ldr r1, [r0]
+	msr basepri, r1
+	dsb
+	isb
 	bl vTaskSwitchContext
 	mov r0, #0
 	msr basepri, r0
-	ldmia sp!, {r3, r14}
+	ldmia sp!, {r3}
 
-	; The first item in pxCurrentTCB is the task top of stack.
+	;/* The first item in pxCurrentTCB is the task top of stack. */
 	ldr r1, [r3]
 	ldr r0, [r1]
 
-	; Pop the core registers.
+	;/* Pop the core registers. */
 	ldmia r0!, {r4-r11, r14}
 
-	; Is the task using the FPU context?  If so, pop the high vfp registers 
-	; too.
+	;/* Is the task using the FPU context?  If so, pop the high vfp registers
+	;too. */
 	tst r14, #0x10
 	it EQ
 	vldmiaeq r0!, {s16-s31}
 
 	msr psp, r0
+	isb
 	bx r14
+	.endasmfunc
 
+; -----------------------------------------------------------
 
-;-----------------------------------------------------------
-
-;vPortSetInterruptMask:
-;	mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
-;	msr BASEPRI, r0
-;
-;	bx r14
-
-;-----------------------------------------------------------
-
-; jmm added
-ulPortSetInterruptMask:
-	mrs r0, basepri
-	mov r1, #configMAX_SYSCALL_INTERRUPT_PRIORITY
-	msr basepri, r1
-	bx r14
-;-----------------------------------------------------------
-
-vPortClearInterruptMask:
-	mov r0, #0
-	msr BASEPRI, r0
-
-	bx r14
-
-;-----------------------------------------------------------
-
-vPortSVCHandler:
-	; Get the location of the current TCB.
-	ldr r3, pxCurrentTCBvalue
+	.align 4
+vPortSVCHandler: .asmfunc
+	;/* Get the location of the current TCB. */
+	ldr	r3, pxCurrentTCBConst
 	ldr r1, [r3]
 	ldr r0, [r1]
-	; Pop the core registers.
+	;/* Pop the core registers. */
 	ldmia r0!, {r4-r11, r14}
 	msr psp, r0
+	isb
 	mov r0, #0
-	msr basepri, r0
+	msr	basepri, r0
 	bx r14
+	.endasmfunc
 
-;-----------------------------------------------------------
+; -----------------------------------------------------------
 
-vPortStartFirstTask:
-; Vector Table offset.
-VTABLE .set 0xE000ED08
-
-	; Use the NVIC offset register to locate the stack.
-	MOVW r0, #VTABLE & 0xFFFF
-	MOVT r0, #VTABLE >> 16
+	.align 4
+vPortStartFirstTask: .asmfunc
+	;/* Use the NVIC offset register to locate the stack. */
+	ldr r0, NVICOffsetConst
 	ldr r0, [r0]
 	ldr r0, [r0]
-	; Set the msp back to the start of the stack.
+	;/* Set the msp back to the start of the stack. */
 	msr msp, r0
-	; Call SVC to start the first task.
+	;/* Call SVC to start the first task. */
 	cpsie i
+	cpsie f
+	dsb
+	isb
 	svc #0
+	.endasmfunc
 
-;-----------------------------------------------------------
+; -----------------------------------------------------------
 
-vPortEnableVFP:
-; CAPCR Register address.
-CPACR .set 0xE000ED88
+	.align 4
+vPortEnableVFP: .asmfunc
+	;/* The FPU enable bits are in the CPACR. */
+	ldr.w r0, CPACRConst
+	ldr	r1, [r0]
 
-	; The FPU enable bits are in the CPACR.
-	MOVW     r0, #CPACR & 0xFFFF
-	MOVT     r0, #CPACR >> 16
-	ldr r1, [r0]
-
-	; Enable CP10 and CP11 coprocessors, then save back.
-	orr r1, r1, #( 0xf << 20 )
+	;/* Enable CP10 and CP11 coprocessors, then save back. */
+	orr	r1, r1, #( 0xf << 20 )
 	str r1, [r0]
-	bx  r14
-
+	bx	r14
+	.endasmfunc
 
 	.end
+
+; -----------------------------------------------------------
+
