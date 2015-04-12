@@ -28,9 +28,9 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_bool_compare_
 
     if (__ldrex((void*)ptr) == oldval){
 
-        return (__strex( newval, (void*)ptr));
+        return ( ~(__strex( newval, (void*)ptr)) ) & 0b1;
     }
-    return 0; //false;
+    return 0;
 
 }
 
