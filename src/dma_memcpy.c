@@ -166,15 +166,16 @@ init_dma_memcpy(uint32_t chan)
     ROM_IntEnable(INT_UDMA);
 
     /* Disable DMA attributes */
-    ROM_uDMAChannelAttributeDisable(chan,
-        UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT |
-        (UDMA_ATTR_HIGH_PRIORITY |
-        UDMA_ATTR_REQMASK));
+    ROM_uDMAChannelAttributeDisable(
+        chan,
+        UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT | (UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK)
+    );
 
     /* Configure DMA control parameters */
-    ROM_uDMAChannelControlSet(chan | UDMA_PRI_SELECT,
-        UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 |
-        UDMA_ARB_8);
+    ROM_uDMAChannelControlSet(
+        chan | UDMA_PRI_SELECT,
+        UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 | UDMA_ARB_8
+    );
 
     udma_is_initialized = 1;
 
@@ -200,12 +201,8 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 
     if (!udma_is_initialized)
     {
-#if 1
         /* Just initialize and proceed to memcpy */
         init_dma_memcpy(chan);
-#else
-        return -1;
-#endif
     }
 
     /* Set udma channel */
@@ -218,9 +215,13 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
     }
 
     /* Set up udma transfer parameters */
-    ROM_uDMAChannelTransferSet(chan | UDMA_PRI_SELECT,
-        UDMA_MODE_AUTO, src, dst,
-        len);
+    ROM_uDMAChannelTransferSet(
+        chan | UDMA_PRI_SELECT,
+        UDMA_MODE_AUTO,
+        src,
+        dst,
+        len
+    );
 
     /* Start udma transfer */
     ROM_uDMAChannelEnable(chan);
