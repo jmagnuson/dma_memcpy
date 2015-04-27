@@ -80,7 +80,6 @@ int main_simple(void)
     /* Enable interrupts */
     ROM_IntMasterEnable();
 
-
     init_dma_memcpy(UDMA_CHANNEL_SW);
 
     { /* Scope out the counter */
@@ -97,7 +96,13 @@ int main_simple(void)
 
     volatile unsigned int t0 = (ROM_SysTickValueGet());
 
-    dma_memcpy(g_ui32DstBuf, g_ui32SrcBuf, MEM_BUFFER_SIZE, UDMA_CHANNEL_SW, cbfn_ptr[0]);
+    dma_memcpy(
+        g_ui32DstBuf,
+        g_ui32SrcBuf,
+        MEM_BUFFER_SIZE,
+        UDMA_CHANNEL_SW,
+        cbfn_ptr[0]
+    );
 
     /* Wait for udma txfer to complete */
     while (!udma_txfer_done);
@@ -115,22 +120,8 @@ int main_simple(void)
     /* Wait around compare txfer times */
     while (1){
         count_past_dma++;
-
-        //__asm("nop");
     }
 
     return 0;
 
 }
-
-#if 0
-/* SysTick counter */
-static uint32_t ui32TickCount = 0;
-
-void
-//xPortSysTickHandler
-SysTickHandler(void)
-{
-    ui32TickCount++;
-}
-#endif
