@@ -182,7 +182,9 @@ void prvProducerTask( void *pvParameters )
             }
 
             passes = sync_increment_and_fetch(&p);
-            if (sync_bool_compare_and_swap(&p, passes, passes+1)){ // p is just used for testing
+
+            // p is just used for testing
+            if (sync_bool_compare_and_swap(&p, passes, passes+1)){
                 __asm("    nop\n");
             }
         }
