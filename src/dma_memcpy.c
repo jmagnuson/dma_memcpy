@@ -168,13 +168,18 @@ init_dma_memcpy(uint32_t chan)
     /* Disable DMA attributes */
     ROM_uDMAChannelAttributeDisable(
         chan,
-        UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT | (UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK)
+          UDMA_ATTR_USEBURST
+        | UDMA_ATTR_ALTSELECT
+        | (UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK)
     );
 
     /* Configure DMA control parameters */
     ROM_uDMAChannelControlSet(
         chan | UDMA_PRI_SELECT,
-        UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 | UDMA_ARB_8
+          UDMA_SIZE_32
+        | UDMA_SRC_INC_32
+        | UDMA_DST_INC_32
+        | UDMA_ARB_8
     );
 
     udma_is_initialized = 1;
