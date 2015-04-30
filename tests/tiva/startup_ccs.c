@@ -74,9 +74,6 @@ extern uint32_t __STACK_TOP;
 extern void xPortPendSVHandler(void);
 extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
-#if 0
-extern void UART1IntHandler(void);
-#endif
 extern void uDMAIntHandler(void);
 extern void uDMAErrorHandler(void);
 
@@ -112,12 +109,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D
     IntDefaultHandler,                      // GPIO Port E
-#if 0
-    UART1IntHandler,                        // UART1 Rx and Tx
-#else
     IntDefaultHandler,                      // UART0 Rx and Tx
-#endif
-    IntDefaultHandler,						// UART1 Rx and Tx
+    IntDefaultHandler,                      // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI0 Rx and Tx
     IntDefaultHandler,                      // I2C0 Master and Slave
     IntDefaultHandler,                      // PWM Fault

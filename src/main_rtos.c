@@ -155,10 +155,6 @@ int main_rtos( void )
 
 }
 
-
-
-
-
 void prvProducerTask( void *pvParameters )
 {
     uint32_t src_buffer[MEM_BUFFER_SIZE] = {0};
@@ -176,7 +172,6 @@ void prvProducerTask( void *pvParameters )
 
     for (;;)
     {
-
         { /* Scope out the counter */
             uint_fast16_t ui16Idx;
 
@@ -186,19 +181,28 @@ void prvProducerTask( void *pvParameters )
                 src_buffer[ui16Idx] = ui16Idx + passes;
             }
 
-
             passes = sync_increment_and_fetch(&p);
-            if (sync_bool_compare_and_swap(&p, passes, passes+1)){ // p is just used for testing
+
+            // p is just used for testing
+            if (sync_bool_compare_and_swap(&p, passes, passes+1)){
                 __asm("    nop\n");
             }
         }
 
         /* Toggle LED */
-        ROM_GPIOPinWrite( GPIO_PORTN_BASE, GPIO_PIN_0,
-                          ~ROM_GPIOPinRead(GPIO_PORTN_BASE, GPIO_PIN_0) );
+        ROM_GPIOPinWrite(
+            GPIO_PORTN_BASE,
+            GPIO_PIN_0,
+            ~ROM_GPIOPinRead(GPIO_PORTN_BASE, GPIO_PIN_0)
+        );
 
-        dma_memcpy( dest_buffer, &src_buffer[0],
-                    MEM_BUFFER_SIZE, UDMA_CHANNEL_SW, cbfn_ptr[0] );
+        dma_memcpy(
+            dest_buffer,
+            &src_buffer[0],
+            MEM_BUFFER_SIZE,
+            UDMA_CHANNEL_SW,
+            cbfn_ptr[0]
+        );
 
         /* Wait for transfer completion via cb/semaphore */
         xSemaphoreTake(isrSemaphore, portMAX_DELAY);
@@ -208,11 +212,8 @@ void prvProducerTask( void *pvParameters )
 
         /* Wait for data clear */
         xSemaphoreTake(sem_array[1], portMAX_DELAY);
-
-
     }
 }
-
 
 void prvConsumerTask( void *pvParameters )
 {
@@ -229,8 +230,11 @@ void prvConsumerTask( void *pvParameters )
         xSemaphoreTake(sem_array[0], portMAX_DELAY);
 
         /* Toggle LED */
-        ROM_GPIOPinWrite( GPIO_PORTN_BASE, GPIO_PIN_0,
-                          ~ROM_GPIOPinRead(GPIO_PORTN_BASE, GPIO_PIN_0) );
+        ROM_GPIOPinWrite(
+            GPIO_PORTN_BASE,
+            GPIO_PIN_0,
+            ~ROM_GPIOPinRead(GPIO_PORTN_BASE, GPIO_PIN_0)
+        );
 
         buffer[0] = 0;
 
@@ -240,7 +244,6 @@ void prvConsumerTask( void *pvParameters )
 
         /* Signal data clear */
         xSemaphoreGive(sem_array[1]);
-
     }
 }
 
