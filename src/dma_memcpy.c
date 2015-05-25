@@ -56,6 +56,7 @@
 static uint32_t udma_error_cnt = 0,       /* udma error count */
                 udma_xfer_fail_cnt = 0,   /* udma failed transfer count */
                 udma_xfer_succ_cnt = 0,   /* udma successful transfer count */
+                udma_xfer_len = 0,		  /* udma transfer length */
                 udma_channel_lock = 0,    /* udma busy flag/lock */
                 udma_is_initialized = 0,  /* udma initialization flag */
                 udma_channel = NULL;      /* udma channel register */
@@ -120,7 +121,7 @@ uDMAIntHandler(void)
         udma_xfer_succ_cnt++;
 
         /* Callback (success) */
-        if (udma_callback_ptr)
+        if (udma_callback_ptr && (udma_xfer_len==0))
         {
             (*udma_callback_ptr)(0);
             udma_callback_ptr = NULL;
@@ -199,10 +200,12 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 
     /* Return fail if txfer size greater than max */
     /* TODO: Handle len > 1024 */
+#if 0
     if (len > 1024)
     {
         return 2;
     }
+#endif
 
     if (!udma_is_initialized)
     {
@@ -219,18 +222,30 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
         udma_callback_ptr = (fn_ptr_t)cb;
     }
 
-    /* Set up udma transfer parameters */
-    ROM_uDMAChannelTransferSet(
-        chan | UDMA_PRI_SELECT,
-        UDMA_MODE_AUTO,
-        src,
-        dst,
-        len
-    );
+    udma_xfer_len = len;
 
-    /* Start udma transfer */
-    ROM_uDMAChannelEnable(chan);
-    ROM_uDMAChannelRequest(chan);
+    do {
+
+        len = (udma_xfer_len > 1024) ? 1024 : udma_xfer_len;
+        udma_xfer_len -= len;
+
+        /* Set up udma transfer parameters */
+        ROM_uDMAChannelTransferSet(
+            chan | UDMA_PRI_SELECT,
+            UDMA_MODE_AUTO,
+            src,
+            dst,
+            len
+        );
+
+        /* Start udma transfer */
+        ROM_uDMAChannelEnable(chan);
+        ROM_uDMAChannelRequest(chan);
+
+        src += len;
+        dst += len;
+
+    } while (udma_xfer_len>0);
 
     return 0; /* return success */
 }
