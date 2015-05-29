@@ -48,6 +48,8 @@
 #include "arm_atomic.h"
 
 
+#define MAX_XFER_LEN 1024                 /* CM4F size limit for uDMA transfer */
+
 /*****************************************************************************
  *
  *                          STATIC VARIABLES
@@ -56,10 +58,12 @@
 static uint32_t udma_error_cnt = 0,       /* udma error count */
                 udma_xfer_fail_cnt = 0,   /* udma failed transfer count */
                 udma_xfer_succ_cnt = 0,   /* udma successful transfer count */
-                udma_xfer_len = 0,		  /* udma transfer length */
+                udma_xfer_len = 0,        /* udma transfer length */
                 udma_channel_lock = 0,    /* udma busy flag/lock */
                 udma_is_initialized = 0,  /* udma initialization flag */
-                udma_channel = NULL;      /* udma channel register */
+                udma_channel = NULL,      /* udma channel register */
+                *udma_xfer_src = 0,       /* udma source pointer */
+                *udma_xfer_dst = 0;       /* udma dest pointer */
 
 typedef void (*fn_ptr_t)( int );          /* typedef with int as argument */
 static fn_ptr_t udma_callback_ptr = NULL; /* udma callback function pointer */
@@ -110,6 +114,7 @@ uDMAErrorHandler(void)
 void
 uDMAIntHandler(void)
 {
+    static uint32_t len=0;
     uint32_t ui32Mode;
 
     /* Get udma channel mode */
@@ -125,6 +130,26 @@ uDMAIntHandler(void)
         {
             (*udma_callback_ptr)(0);
             udma_callback_ptr = NULL;
+
+        }
+        else {
+            len = (udma_xfer_len > MAX_XFER_LEN) ? MAX_XFER_LEN : udma_xfer_len;
+            udma_xfer_len -= len;
+
+            /* Set up udma transfer parameters */
+            ROM_uDMAChannelTransferSet(
+               udma_channel,
+               UDMA_MODE_AUTO,
+               udma_xfer_src,
+               udma_xfer_dst,
+               len
+            );
+
+            udma_xfer_src += len;
+            udma_xfer_dst += len;
+
+            ROM_uDMAChannelEnable(udma_channel);
+            ROM_uDMAChannelRequest(udma_channel);
         }
 
     }
@@ -176,7 +201,7 @@ init_dma_memcpy(uint32_t chan)
 
     /* Configure DMA control parameters */
     ROM_uDMAChannelControlSet(
-        chan | UDMA_PRI_SELECT,
+        chan,
           UDMA_SIZE_32
         | UDMA_SRC_INC_32
         | UDMA_DST_INC_32
@@ -185,7 +210,7 @@ init_dma_memcpy(uint32_t chan)
 
     udma_is_initialized = 1;
 
-    return 0; // return success
+    return 0; /* return success */
 }
 
 int __inline
@@ -197,15 +222,6 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
     {
         return 1;
     }
-
-    /* Return fail if txfer size greater than max */
-    /* TODO: Handle len > 1024 */
-#if 0
-    if (len > 1024)
-    {
-        return 2;
-    }
-#endif
 
     if (!udma_is_initialized)
     {
@@ -224,28 +240,25 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 
     udma_xfer_len = len;
 
-    do {
+    len = (udma_xfer_len > MAX_XFER_LEN) ? MAX_XFER_LEN : udma_xfer_len;
+    udma_xfer_len -= len;
 
-        len = (udma_xfer_len > 1024) ? 1024 : udma_xfer_len;
-        udma_xfer_len -= len;
+    /* Set up udma transfer parameters */
+    ROM_uDMAChannelTransferSet(
+        chan | UDMA_PRI_SELECT,
+        UDMA_MODE_AUTO,
+        src,
+        dst,
+        len
+    );
 
-        /* Set up udma transfer parameters */
-        ROM_uDMAChannelTransferSet(
-            chan | UDMA_PRI_SELECT,
-            UDMA_MODE_AUTO,
-            src,
-            dst,
-            len
-        );
+    /* Increment before starting transfer */
+    udma_xfer_src = src + len;
+    udma_xfer_dst = dst + len;
 
-        /* Start udma transfer */
-        ROM_uDMAChannelEnable(chan);
-        ROM_uDMAChannelRequest(chan);
-
-        src += len;
-        dst += len;
-
-    } while (udma_xfer_len>0);
+    /* Start udma transfer */
+    ROM_uDMAChannelEnable(chan);
+    ROM_uDMAChannelRequest(chan);
 
     return 0; /* return success */
 }
