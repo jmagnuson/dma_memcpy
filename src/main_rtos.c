@@ -94,11 +94,15 @@ int main_rtos( void )
     static TaskParameters    taskParams      = {NULL, NULL};
     static SemaphoreHandle_t pcSemaphores[2] = {NULL, NULL};
 
+    ROM_WatchdogEnable(false);
+
     /* Set up clock for 50MHz */
-    MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
-                            SYSCTL_OSC_MAIN |
-                            SYSCTL_USE_PLL |
-                            SYSCTL_CFG_VCO_480), 50000000);
+    MAP_SysCtlClockFreqSet(
+        SYSCTL_XTAL_25MHZ
+      | SYSCTL_OSC_MAIN
+      | SYSCTL_USE_PLL
+      | SYSCTL_CFG_VCO_480,
+      50000000);
 
     init_led();
 
@@ -119,14 +123,13 @@ int main_rtos( void )
 
     if( task_result =
         xTaskCreate(
-                    prvProducerTask,
-                    (portCHAR *)"prvProducerTask",
-                    configMINIMAL_STACK_SIZE+MEM_BUFFER_SIZE,
-                    (void*)&taskParams,
-                    (tskIDLE_PRIORITY+1),
-                    NULL
-                    )
-        != pdTRUE)
+            prvProducerTask,
+            (portCHAR *)"prvProducerTask",
+            configMINIMAL_STACK_SIZE+MEM_BUFFER_SIZE,
+            (void*)&taskParams,
+            (tskIDLE_PRIORITY+1),
+            NULL
+        ) != pdTRUE)
     {
         /* Task not created.  Stop here for debug. */
         while (1);
@@ -134,13 +137,13 @@ int main_rtos( void )
 
     if( task_result =
         xTaskCreate(
-                    prvConsumerTask,
-                    (portCHAR *)"prvConsumerTask",
-                    configMINIMAL_STACK_SIZE,
-                    (void*)&taskParams,
-                    (tskIDLE_PRIORITY+1),
-                    NULL
-                    )
+            prvConsumerTask,
+            (portCHAR *)"prvConsumerTask",
+            configMINIMAL_STACK_SIZE,
+            (void*)&taskParams,
+            (tskIDLE_PRIORITY+1),
+            NULL
+            )
         != pdTRUE)
     {
         /* Task not created.  Stop here for debug. */
@@ -181,12 +184,14 @@ void prvProducerTask( void *pvParameters )
                 src_buffer[ui16Idx] = ui16Idx + passes;
             }
 
+#if 0  // ONLY USED FOR TESTING
             passes = sync_increment_and_fetch(&p);
 
             // p is just used for testing
             if (sync_bool_compare_and_swap(&p, passes, passes+1)){
                 __asm("    nop\n");
             }
+#endif
         }
 
         /* Toggle LED */
@@ -220,8 +225,8 @@ void prvConsumerTask( void *pvParameters )
     SemaphoreHandle_t *sem_array;
     uint32_t *buffer;
 
-    sem_array = ( ((TaskParameters*)pvParameters)->pcSemaphores );
-    buffer =    ( ((TaskParameters*)pvParameters)->buffer );
+    sem_array = ((TaskParameters*)pvParameters)->pcSemaphores;
+    buffer =    ((TaskParameters*)pvParameters)->buffer;
 
     for (;;)
     {
@@ -251,35 +256,14 @@ void prvConsumerTask( void *pvParameters )
 
 void vApplicationMallocFailedHook( void )
 {
-    /* vApplicationMallocFailedHook() will only be called if
-    configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h.  It is a hook
-    function that will get called if a call to pvPortMalloc() fails.
-    pvPortMalloc() is called internally by the kernel whenever a task, queue,
-    timer or semaphore is created.  It is also called by various parts of the
-    demo application.  If heap_1.c or heap_2.c are used, then the size of the
-    heap available to pvPortMalloc() is defined by configTOTAL_HEAP_SIZE in
-    FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
-    to query the size of free heap space that remains (although it does not
-    provide information on how the remaining heap might be fragmented). */
-
     //vAssertCalled( __LINE__, __FILE__ );
-
+    __asm("    nop\n");
 }
 /*-----------------------------------------------------------*/
 
 void vApplicationIdleHook( void )
 {
-    /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
-    to 1 in FreeRTOSConfig.h.  It will be called on each iteration of the idle
-    task.  It is essential that code added to this hook function never attempts
-    to block in any way (for example, call xQueueReceive() with a block time
-    specified, or call vTaskDelay()).  If the application makes use of the
-    vTaskDelete() API function (as this demo application does) then it is also
-    important that vApplicationIdleHook() is permitted to return to its calling
-    function, because it is the responsibility of the idle task to clean up
-    memory allocated by the kernel to any task that has since been deleted. */
-
-
+    __asm("    nop\n");
 }
 /*-----------------------------------------------------------*/
 
@@ -293,18 +277,12 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 
 void vApplicationTickHook( void )
 {
-    /* This function will be called by each tick interrupt if
-    configUSE_TICK_HOOK is set to 1 in FreeRTOSConfig.h.  User code can be
-    added here, but the tick hook is called from an interrupt context, so
-    code must not attempt to block, and only the interrupt safe FreeRTOS API
-    functions can be used (those that end in FromISR()). */
-
+    __asm("    nop\n");
 }
 /*-----------------------------------------------------------*/
 
 void vAssertCalled( unsigned long ulLine, const char * const pcFileName )
 {
-
-
+    __asm("    nop\n");
 }
 
