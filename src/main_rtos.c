@@ -94,15 +94,13 @@ int main_rtos( void )
     static TaskParameters    taskParams      = {NULL, NULL};
     static SemaphoreHandle_t pcSemaphores[2] = {NULL, NULL};
 
-    ROM_WatchdogEnable(false);
-
-    /* Set up clock for 50MHz */
+    /* Set up clock for 120MHz */
     MAP_SysCtlClockFreqSet(
         SYSCTL_XTAL_25MHZ
       | SYSCTL_OSC_MAIN
       | SYSCTL_USE_PLL
       | SYSCTL_CFG_VCO_480,
-      50000000);
+      120000000);
 
     init_led();
 

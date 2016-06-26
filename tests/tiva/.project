@@ -34,7 +34,7 @@
 	<variableList>
 		<variable>
 			<name>ORIGINAL_PROJECT_ROOT</name>
-			<value>file:/C:/ti/TivaWare_C_Series-2.1.0.12573/examples/boards/ek-tm4c1294xl/udma_demo/ccs</value>
+			<value>file:/C:/ti/TivaWare_C_Series-2.1.2.111/examples/boards/ek-tm4c1294xl/udma_demo/ccs</value>
 		</variable>
 		<variable>
 			<name>SRC_LOC</name>
@@ -42,7 +42,7 @@
 		</variable>
 		<variable>
 			<name>SW_ROOT</name>
-			<value>file:/C:/ti/TivaWare_C_Series-2.1.0.12573</value>
+			<value>file:/C:/ti/TivaWare_C_Series-2.1.2.111</value>
 		</variable>
 	</variableList>
 </projectDescription>
