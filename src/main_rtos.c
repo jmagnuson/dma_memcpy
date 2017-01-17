@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-* Copyright (C) 2014, Jon Magnuson <my.name at google's mail service>
+* Copyright (C) 2017, Jon Magnuson <my.name at google's mail service>
 * All Rights Reserved.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,10 @@
 #include <stdbool.h>
 
 /* Platform includes. */
+#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
@@ -42,17 +44,13 @@
 /* Application includes. */
 #include "dma_memcpy.h"
 
-#if /*defined(ccs) || */defined ( __TMS470__ )
-#include "arm_atomic.h"
-#endif
-
 /* Size of memcpy buffer */
 #define MEM_BUFFER_SIZE         1024
 
 typedef struct TaskParameters_t
 {
     SemaphoreHandle_t *pcSemaphores;
-    uint32_t buffer[MEM_BUFFER_SIZE]; // dst buffer
+    uint32_t buffer[MEM_BUFFER_SIZE];
 
 } TaskParameters;
 
@@ -66,6 +64,31 @@ void vApplicationIdleHook( void );
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName );
 void vApplicationTickHook( void );
 
+#if defined(ccs)
+#pragma DATA_ALIGN(pui8ControlTable, 1024)
+uint8_t pui8ControlTable[1024];
+#else /* gcc */
+uint8_t pui8ControlTable[1024] __attribute__ ((aligned(1024)));
+#endif
+
+static void init_dma()
+{
+    /* Enable udma peripheral controller */
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
+
+    /* Enable udma error interrupt */
+    ROM_IntEnable(INT_UDMAERR);
+
+    /* Enable udma */
+    ROM_uDMAEnable();
+
+    /* Set udma control table */
+    ROM_uDMAControlBaseSet(pui8ControlTable);
+
+    /* Enable udma interrupts */
+    ROM_IntEnable(INT_UDMA);
+}
 
 void init_led( void )
 {
@@ -103,6 +126,8 @@ int main_rtos( void )
       120000000);
 
     init_led();
+
+    init_dma();
 
     init_dma_memcpy(UDMA_CHANNEL_SW);
 
@@ -182,14 +207,6 @@ void prvProducerTask( void *pvParameters )
                 src_buffer[ui16Idx] = ui16Idx + passes;
             }
 
-#if 0  // ONLY USED FOR TESTING
-            passes = sync_increment_and_fetch(&p);
-
-            // p is just used for testing
-            if (sync_bool_compare_and_swap(&p, passes, passes+1)){
-                __asm("    nop\n");
-            }
-#endif
         }
 
         /* Toggle LED */

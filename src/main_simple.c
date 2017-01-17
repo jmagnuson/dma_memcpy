@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-* Copyright (C) 2014, Jon Magnuson <my.name at google's mail service>
+* Copyright (C) 2017, Jon Magnuson <my.name at google's mail service>
 * All Rights Reserved.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -49,8 +49,35 @@
 /* Size of memcpy buffer */
 #define MEM_BUFFER_SIZE 1024
 
-int udma_txfer_done = 0;
-void set_udma_txfer_done(int status){
+#if defined(ccs)
+#pragma DATA_ALIGN(pui8ControlTable, 1024)
+uint8_t pui8ControlTable[1024];
+#else /* gcc */
+uint8_t pui8ControlTable[1024] __attribute__ ((aligned(1024)));
+#endif
+
+static void init_dma()
+{
+
+    /* Enable udma peripheral controller */
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
+
+    /* Enable udma error interrupt */
+    ROM_IntEnable(INT_UDMAERR);
+
+    /* Enable udma */
+    ROM_uDMAEnable();
+
+    /* Set udma control table */
+    ROM_uDMAControlBaseSet(pui8ControlTable);
+
+    /* Enable udma interrupts */
+    ROM_IntEnable(INT_UDMA);
+}
+
+static int udma_txfer_done = 0;
+static void set_udma_txfer_done(int status){
     if (status==0){
         /* Success */
         udma_txfer_done = 1;
@@ -79,6 +106,8 @@ int main_simple(void)
 
     /* Enable interrupts */
     ROM_IntMasterEnable();
+
+    init_dma();
 
     init_dma_memcpy(UDMA_CHANNEL_SW);
 

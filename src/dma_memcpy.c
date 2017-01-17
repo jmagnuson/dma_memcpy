@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-* Copyright (C) 2014, Jon Magnuson <my.name at google's mail service>
+* Copyright (C) 2017, Jon Magnuson <my.name at google's mail service>
 * All Rights Reserved.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -45,8 +45,10 @@
 
 /* Application includes */
 #include "dma_memcpy.h"
-#include "arm_atomic.h"
 
+#if defined(ccs)
+#include "ccs_atomic.h"                   /* atomic builtins not defined in ccs */
+#endif
 
 #define MAX_XFER_LEN 1024                 /* CM4F size limit for uDMA transfer */
 
@@ -67,9 +69,6 @@ static uint32_t udma_error_cnt = 0,       /* udma error count */
 
 typedef void (*fn_ptr_t)( int );          /* typedef with int as argument */
 static fn_ptr_t udma_callback_ptr = NULL; /* udma callback function pointer */
-
-#pragma DATA_ALIGN(pui8ControlTable, 1024)
-static uint8_t pui8ControlTable[1024];    /* aligned control-block for udma */
 
 
 /*****************************************************************************
@@ -175,22 +174,6 @@ int
 init_dma_memcpy(uint32_t chan)
 {
 
-    /* Enable udma peripheral controller */
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
-    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
-
-    /* Enable udma error interrupt */
-    ROM_IntEnable(INT_UDMAERR);
-
-    /* Enable udma */
-    ROM_uDMAEnable();
-
-    /* Set udma control table */
-    ROM_uDMAControlBaseSet(pui8ControlTable);
-
-    /* Enable udma interrupts */
-    ROM_IntEnable(INT_UDMA);
-
     /* Disable DMA attributes */
     ROM_uDMAChannelAttributeDisable(
         chan,
@@ -218,7 +201,7 @@ dma_memcpy(uint32_t *dst, uint32_t *src, size_t len, uint32_t chan, void *cb)
 {
 
     /* Return busy if udma channel is in use, otherwise set busy and continue */
-    if (!sync_bool_compare_and_swap(&udma_channel_lock, 0,  1))
+    if (!__sync_bool_compare_and_swap(&udma_channel_lock, 0,  1))
     {
         return 1;
     }
