@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-* Copyright (C) 2014, Jon Magnuson <my.name at google's mail service>
+* Copyright (C) 2017, Jon Magnuson <my.name at google's mail service>
 * All Rights Reserved.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 #define ARM_ATOMIC_H_
 
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_bool_compare_and_swap( volatile unsigned int *ptr, unsigned int oldval, unsigned int newval )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_bool_compare_and_swap( volatile unsigned int *ptr, unsigned int oldval, unsigned int newval )
 {
 
     if (__ldrex((void*)ptr) == oldval){
@@ -34,7 +34,7 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_bool_compare_
 
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_add( volatile unsigned int *ptr, unsigned int value )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_fetch_and_add( volatile unsigned int *ptr, unsigned int value )
 {
     unsigned int result=0;
 
@@ -43,7 +43,7 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_add
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_add_and_fetch( volatile unsigned int *ptr, unsigned int value )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_add_and_fetch( volatile unsigned int *ptr, unsigned int value )
 {
     unsigned int result=0;
 
@@ -52,7 +52,7 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_add_and_fetch
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_sub( volatile unsigned int *ptr, unsigned int value )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_fetch_and_sub( volatile unsigned int *ptr, unsigned int value )
 {
     unsigned int result=0;
 
@@ -61,7 +61,7 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_sub
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_sub_and_fetch( volatile unsigned int *ptr, unsigned int value )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_sub_and_fetch( volatile unsigned int *ptr, unsigned int value )
 {
     unsigned int result=0;
 
@@ -70,24 +70,24 @@ __attribute__( ( always_inline ) ) static inline unsigned int sync_sub_and_fetch
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_increment( volatile unsigned int *ptr )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_fetch_and_increment( volatile unsigned int *ptr )
 {
     return sync_fetch_and_add(ptr, 1);
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_increment_and_fetch( volatile unsigned int *ptr )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_increment_and_fetch( volatile unsigned int *ptr )
 {
-    return sync_add_and_fetch(ptr, 1);
+    return __sync_add_and_fetch(ptr, 1);
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_fetch_and_decrement( volatile unsigned int *ptr )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_fetch_and_decrement( volatile unsigned int *ptr )
 {
-    return sync_fetch_and_sub(ptr, 1);
+    return __sync_fetch_and_sub(ptr, 1);
 }
 
-__attribute__( ( always_inline ) ) static inline unsigned int sync_decrement_and_fetch( volatile unsigned int *ptr )
+__attribute__( ( always_inline ) ) static inline unsigned int __sync_decrement_and_fetch( volatile unsigned int *ptr )
 {
-    return sync_sub_and_fetch(ptr, 1);
+    return __sync_sub_and_fetch(ptr, 1);
 }
 
 
